@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "123802445141",
+    "project_id": "cook-and-shop",
+    "storage_bucket": "cook-and-shop.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123802445141:android:9a55fb73af3ffe7ab57bdc",
+        "android_client_info": {
+          "package_name": "com.example.cook_and_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtZ-VVtWDVFP8OC3SKiuugAAbuicv_5V0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
