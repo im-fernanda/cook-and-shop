@@ -15,21 +15,21 @@
 </p>
 
 <div style="display: flex; gap: 20px; justify-content: center; align-items: center;">
-  <img src="screenshots/1.png" alt="Texto alternativo" width="300" height="600">
-  <img src="screenshots/2.png" alt="Texto alternativo" width="300" height="600">
-  <img src="screenshots/2.2.png" alt="Texto alternativo" width="300" height="600">
+  <img src="screenshots/1.png" alt="Texto alternativo" width="270" height="600">
+  <img src="screenshots/2.png" alt="Texto alternativo" width="270" height="600">
+  <img src="screenshots/2.2.png" alt="Texto alternativo" width="270" height="600">
 </div>
 
 <div style="display: flex; gap: 20px; justify-content: center; align-items: center;">
-  <img src="screenshots/6.png" alt="Texto alternativo" width="300" height="600">
-  <img src="screenshots/7.png" alt="Texto alternativo" width="300" height="600">
-  <img src="screenshots/7.2.png" alt="Texto alternativo" width="300" height="600">
+  <img src="screenshots/6.png" alt="Texto alternativo" width="270" height="600">
+  <img src="screenshots/7.png" alt="Texto alternativo" width="270" height="600">
+  <img src="screenshots/7.2.png" alt="Texto alternativo" width="270" height="600">
 </div>
 
 <div style="display: flex; gap: 20px; justify-content: center; align-items: center;">
-  <img src="screenshots/8.png" alt="Texto alternativo" width="300" height="600">
-  <img src="screenshots/3.png" alt="Texto alternativo" width="300" height="600">
-  <img src="screenshots/4.png" alt="Texto alternativo" width="300" height="600">
+  <img src="screenshots/8.png" alt="Texto alternativo" width="270" height="600">
+  <img src="screenshots/3.png" alt="Texto alternativo" width="270" height="600">
+  <img src="screenshots/4.png" alt="Texto alternativo" width="270" height="600">
 
 </div>
 
