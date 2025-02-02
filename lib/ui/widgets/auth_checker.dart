@@ -1,7 +1,6 @@
 import 'package:cook_and_shop/ui/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../pages/home.dart';
 
 class AuthChecker extends StatelessWidget {
@@ -10,10 +9,11 @@ class AuthChecker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
+      body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) =>
-            snapshot.hasData ? const Home() : const Login(),
+        builder: (context, snapshot) {
+          return snapshot.hasData ? const Home() : const Login();
+        },
       ),
     );
   }

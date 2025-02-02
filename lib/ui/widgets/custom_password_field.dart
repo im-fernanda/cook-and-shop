@@ -36,7 +36,7 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
         keyboardType: widget.keyboardType,
         controller: widget.controller,
         validator: widget.validateFunction,
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         obscureText: obscured,
         decoration: InputDecoration(
           suffixIconColor: Theme.of(context).colorScheme.primary,
@@ -47,10 +47,10 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
                 });
               },
               child: obscured
-                  ? const Icon(Icons.remove_red_eye_rounded,
-                      color: Colors.black)
-                  : const Icon(Icons.remove_red_eye_outlined,
-                      color: Colors.black)),
+                  ? Icon(Icons.remove_red_eye_rounded,
+                      color: Theme.of(context).colorScheme.onPrimary)
+                  : Icon(Icons.remove_red_eye_outlined,
+                      color: Theme.of(context).colorScheme.onPrimary)),
           hintText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.grey),
           labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),

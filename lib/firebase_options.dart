@@ -53,8 +53,8 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBtZ-VVtWDVFP8OC3SKiuugAAbuicv_5V0',
-    appId: '1:123802445141:android:9a55fb73af3ffe7ab57bdc',
+    apiKey: 'yourkey',
+    appId: 'yourid',
     messagingSenderId: '123802445141',
     projectId: 'cook-and-shop',
     storageBucket: 'cook-and-shop.firebasestorage.app',

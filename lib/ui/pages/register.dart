@@ -17,7 +17,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final rePasswordController = TextEditingController();
@@ -25,9 +24,7 @@ class _RegisterState extends State<Register> {
   void signUp() async {
     if (passwordController.value.text != rePasswordController.value.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("As senhas não coincidem."),
-        ),
+        const SnackBar(content: Text("As senhas não coincidem.")),
       );
       return;
     }
@@ -38,7 +35,7 @@ class _RegisterState extends State<Register> {
       await authService.signUpWithEmailAndPassword(
           emailController.value.text, passwordController.value.text);
 
-      User.addUser(emailController.value.text, usernameController.value.text);
+      User.addUser(emailController.value.text);
 
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Home()));
@@ -78,7 +75,7 @@ class _RegisterState extends State<Register> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: screenHeight * 0.08),
+                SizedBox(height: screenHeight * 0.1),
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -86,21 +83,22 @@ class _RegisterState extends State<Register> {
                     children: [
                       FadeInUp(
                         duration: const Duration(milliseconds: 1000),
-                        child: Text(
-                          "COOK & SHOP",
-                          style: TextStyle(
-                              color: colorScheme.surface,
-                              fontSize: screenHeight * 0.05),
-                        ),
+                        child: Text("COOK & SHOP",
+                            style: TextStyle(
+                                fontFamily: 'Telma',
+                                color: colorScheme.surface,
+                                fontSize: screenHeight * 0.045)),
                       ),
                       SizedBox(height: screenHeight * 0.01),
                       FadeInUp(
                         duration: const Duration(milliseconds: 1300),
                         child: Text(
-                          "Cadastro",
-                          style: TextStyle(
-                              color: colorScheme.surface,
-                              fontSize: screenHeight * 0.025),
+                          "Crie uma conta",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                                  color: Theme.of(context).colorScheme.surface),
                         ),
                       ),
                     ],
@@ -138,11 +136,6 @@ class _RegisterState extends State<Register> {
                               ),
                               child: Column(
                                 children: [
-                                  CustomTextField(
-                                    hintText: "Username",
-                                    obscure: false,
-                                    controller: usernameController,
-                                  ),
                                   CustomTextField(
                                     hintText: "Email",
                                     obscure: false,

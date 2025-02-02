@@ -1,13 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<UserCredential> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
       UserCredential credential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      await _firestore.collection('users').doc(credential.user!.uid).set({
+        'uid': credential.user!.uid,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
       return credential;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
@@ -42,11 +51,7 @@ class AuthService {
     return _firebaseAuth.currentUser!.email;
   }
 
-  Future<void> signInAnonymously() async {
-    try {
-      await _firebaseAuth.signInAnonymously();
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
-    }
+  String? getCurrentUserId() {
+    return _firebaseAuth.currentUser?.uid;
   }
 }

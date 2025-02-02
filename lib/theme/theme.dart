@@ -12,7 +12,7 @@ class MaterialTheme {
       onPrimary: Color.fromARGB(255, 0, 0, 0),
       secondary: Color.fromARGB(255, 231, 41, 47),
       onSecondary: Color.fromARGB(255, 0, 0, 0),
-      tertiary: Color.fromARGB(255, 255, 185, 89),
+      tertiary: Colors.redAccent,
       surface: Color.fromARGB(255, 255, 255, 255),
       error: Colors.redAccent,
       onError: Colors.black,
@@ -31,8 +31,10 @@ class MaterialTheme {
       onPrimary: Color.fromARGB(255, 14, 14, 14),
       secondary: Color.fromARGB(255, 227, 62, 67),
       onSecondary: Color.fromARGB(255, 5, 5, 5),
-      tertiary: Color.fromARGB(255, 168, 144, 65),
+      tertiary: Colors.redAccent,
       surface: Color.fromARGB(255, 17, 17, 17),
+      background: Color.fromARGB(255, 12, 12, 12),
+      onBackground: Color.fromARGB(255, 255, 255, 255),
       error: Colors.redAccent,
       onError: Colors.black,
       onSurface: Color.fromARGB(255, 12, 12, 12),
@@ -46,7 +48,19 @@ class MaterialTheme {
   ThemeData theme(ColorScheme colorScheme) => ThemeData(
         useMaterial3: true,
         colorScheme: colorScheme,
-        textTheme: textTheme.apply(
+        fontFamily: 'Satoshi', // Fonte padrão
+        textTheme: TextTheme(
+          headlineLarge: TextStyle(
+            fontFamily: 'Telma', // Fonte personalizada para títulos grandes
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Colors.redAccent,
+          ),
+          bodyLarge: TextStyle(
+            fontFamily: 'Satoshi', // Fonte para textos do corpo
+            fontSize: 18,
+          ),
+        ).apply(
           bodyColor: colorScheme.onSurface,
           displayColor: colorScheme.onSurface,
         ),

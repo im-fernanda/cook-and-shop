@@ -1,5 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../services/api/api_service.dart';
+import 'package:cook_and_shop/services/api/api_service.dart';
+import 'package:provider/provider.dart';
+import '../widgets/bottom_nav_bar.dart';
+import '../widgets/category_button.dart';
+import '../widgets/recipes/recipe_section.dart';
+import 'login.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -9,29 +15,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final ApiService _apiService = ApiService();
+  late final ApiService _apiService;
   bool _isLoading = false;
-  Map<String, List<dynamic>> _categories = {
+
+  final Map<String, List<dynamic>> _categories = {
     "breakfast": [],
     "lunch": [],
     "desserts": [],
   };
 
-  @override
-  void initState() {
-    super.initState();
-    _loadCategories();
-  }
-
   Future<void> _loadCategories() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      final breakfast = await _apiService.searchRecipes("breakfast");
-      final lunch = await _apiService.searchRecipes("lunch");
-      final desserts = await _apiService.searchRecipes("desserts");
+      final breakfast = await _apiService.fetchPopularRecipes("breakfast");
+      final lunch = await _apiService.fetchPopularRecipes("lunch");
+      final desserts = await _apiService.fetchPopularRecipes("desserts");
 
       setState(() {
         _categories["breakfast"] = breakfast;
@@ -41,9 +40,54 @@ class _HomeState extends State<Home> {
     } catch (e) {
       print('Erro ao carregar categorias: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _handleLogout() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Deseja realmente sair?'),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              if (context.mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                );
+              }
+            },
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _apiService = context.read<ApiService>();
+      _loadCategories();
+      _isInitialized = true;
     }
   }
 
@@ -51,192 +95,66 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Row(
-          children: [
-            Text(
-              'Cook & Shop',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
+        title: Text(
+          'Cook & Shop',
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontSize: 40,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-            ),
-          ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _handleLogout,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'Compre o que sua cozinha precisa',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(height: 16),
-            // Categorias Horizontais
-            SizedBox(
-              height: 50,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                children: [
-                  _buildCategoryButton('Drinks'),
-                  _buildCategoryButton('Baking'),
-                  _buildCategoryButton('Desserts'),
-                  _buildCategoryButton('Vegetarian'),
-                  _buildCategoryButton('Snacks'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Barra de Busca
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Busque por ingredientes..',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Seção de Receitas Populares
+            const SizedBox(height: 26),
+            CategoryButtons(),
+            const SizedBox(height: 20),
             if (_isLoading)
               const Center(child: CircularProgressIndicator())
-            else ...[
-              _buildRecipeSection('Café da manhã', 'breakfast'),
-              const SizedBox(height: 16),
-              _buildRecipeSection('Lanches populares', 'lunch'),
-              const SizedBox(height: 16),
-              _buildRecipeSection('Sobremesas populares', 'desserts'),
-            ],
+            else
+              ..._buildRecipeSections(),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favorite'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.menu), label: 'Listas de Compras'),
-        ],
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-      ),
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 
-  Widget _buildCategoryButton(String title) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.red,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          side: const BorderSide(color: Colors.red),
-        ),
-        child: Text(title),
+  List<Widget> _buildRecipeSections() {
+    return [
+      RecipeSection(
+        title: 'Café da manhã',
+        categoryKey: 'breakfast',
+        recipes: _categories['breakfast']!,
       ),
-    );
-  }
-
-  Widget _buildRecipeSection(String title, String categoryKey) {
-    final recipes = _categories[categoryKey] ?? [];
-    if (recipes.isEmpty) return Container();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'See All',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 220,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: recipes.length,
-            itemBuilder: (context, index) {
-              final recipe = recipes[index];
-              return Container(
-                width: 160,
-                margin: const EdgeInsets.only(right: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        recipe['image'] ?? '',
-                        height: 160,
-                        width: 160,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      recipe['title'] ?? '',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.timer, size: 16, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Text(
-                          recipe['readyInMinutes'] ?? '',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
+      RecipeSection(
+        title: 'Almoço',
+        categoryKey: 'lunch',
+        recipes: _categories['lunch']!,
+      ),
+      RecipeSection(
+        title: 'Sobremesas populares',
+        categoryKey: 'desserts',
+        recipes: _categories['desserts']!,
+      ),
+      const Padding(padding: EdgeInsets.only(bottom: 20)),
+    ];
   }
 }

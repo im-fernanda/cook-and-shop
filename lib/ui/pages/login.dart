@@ -17,7 +17,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -51,7 +50,6 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -84,7 +82,7 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: screenHeight * 0.1), // 10% da altura
+                SizedBox(height: screenHeight * 0.2), // 20% da altura
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -97,7 +95,7 @@ class _LoginState extends State<Login> {
                           style: TextStyle(
                               fontFamily: 'Telma',
                               color: colorScheme.surface,
-                              fontSize: 40),
+                              fontSize: screenHeight * 0.045),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -105,8 +103,11 @@ class _LoginState extends State<Login> {
                         duration: const Duration(milliseconds: 1300),
                         child: Text(
                           "Bem-vindo de volta!",
-                          style: TextStyle(
-                              color: colorScheme.surface, fontSize: 18),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                                  color: Theme.of(context).colorScheme.surface),
                         ),
                       ),
                     ],

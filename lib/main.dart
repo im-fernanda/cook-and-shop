@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cook_and_shop/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cook_and_shop/ui/pages/home.dart';
+
 import 'package:cook_and_shop/services/auth_checker.dart';
 import 'package:provider/provider.dart';
 import 'core/di/configure_providers.dart';
@@ -15,7 +15,11 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true, cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
+
   final data = await ConfigureProviders.createDependencyTree();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp(data: data));
 }
 
@@ -33,6 +37,7 @@ class MyApp extends StatelessWidget {
         title: 'Cook & Shop',
         theme: const MaterialTheme(TextTheme()).light(),
         darkTheme: const MaterialTheme(TextTheme()).dark(),
+        themeMode: ThemeMode.system,
         home: const AuthChecker(),
       ),
     );
